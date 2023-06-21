@@ -5,10 +5,17 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const email = ref('')
 const password = ref('')
+let showPassword = ref(false)
+let isLoading = ref(false)
 let isInvalidCred = ref(false)
 
+function togglePasswordVisibility(){
+    showPassword.value = !showPassword.value
+}
+
 function login() {
-  router.push('/dashboard')
+    isLoading.value = true
+    router.push('/dashboard')
 }
 
 function onChange(event: any, isEmail: boolean) {
@@ -28,30 +35,15 @@ function forgotPassword(){
 </script>
 
 <template>
-    <div class="flex items-center justify-center h-screen w-full px-6 bg-indigo-500">
-        <div class="flex flex-row w-full max-w-2xl p-6 bg-white rounded-md shadow-md">
+    <div class="flex items-center justify-center h-screen w-full px-6 bg-indigo-700">
+        <div class="flex flex-row w-full max-w-3xl bg-white rounded-md shadow-md">
             <div class="flex flex-col items-center justify-center basis-1/2">
-                <div class="flex items-center justify-center">
-                    <svg
-                    class="w-10 h-10"
-                    viewBox="0 0 512 512"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                <div class="flex flex-col items-center justify-center">
+                    <img
+                    class="object-cover h-20 w-20"
+                    src="/cube-run.png"
                     >
-                    <path
-                        d="M364.61 390.213C304.625 450.196 207.37 450.196 147.386 390.213C117.394 360.22 102.398 320.911 102.398 281.6C102.398 242.291 117.394 202.981 147.386 172.989C147.386 230.4 153.6 281.6 230.4 307.2C230.4 256 256 102.4 294.4 76.7999C320 128 334.618 142.997 364.608 172.989C394.601 202.981 409.597 242.291 409.597 281.6C409.597 320.911 394.601 360.22 364.61 390.213Z"
-                        fill="#4C51BF"
-                        stroke="#4C51BF"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                    <path
-                        d="M201.694 387.105C231.686 417.098 280.312 417.098 310.305 387.105C325.301 372.109 332.8 352.456 332.8 332.8C332.8 313.144 325.301 293.491 310.305 278.495C295.309 263.498 288 256 275.2 230.4C256 243.2 243.201 320 243.201 345.6C201.694 345.6 179.2 332.8 179.2 332.8C179.2 352.456 186.698 372.109 201.694 387.105Z"
-                        fill="white"
-                    />
-                    </svg>
-                    <span class="text-2xl font-semibold text-gray-700">V-Dashboard</span>
+                    <span class="text-2xl font-semibold text-gray-700">Cube Run</span>
                 </div>
 
                 <form class="mt-4" @submit.prevent="login">
@@ -67,24 +59,69 @@ function forgotPassword(){
                         >
                     </label>
             
-                    <label class="block mt-3">
+                    <label class="block mt-3 relative items-center">
                         <span class="text-sm text-gray-700">Password</span>
                         <input
                             v-model="password"
-                            type="password"
+                            v-if="showPassword"
+                            type="text"
                             placeholder="Enter your password"
-                            class="block w-full mt-1 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500"
+                            class="input block w-full mt-1 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500 pr-10"
                             @change="onChange($event, false)"
                             required
                         >
-                    </label>
+                        <input
+                            v-model="password"
+                            v-else
+                            type="password"
+                            placeholder="Enter your password"
+                            class="input block w-full mt-1 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500 pr-10"
+                            @change="onChange($event, false)"
+                            required
+                      >
+                        <button
+                          type="button"
+                          class="absolute top-2/3 right-2 transform -translate-y-1/2 text-gray-600 flex items-center"
+                          @click="togglePasswordVisibility"
+                        >
+                            <svg v-if="showPassword" 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                width="36" 
+                                height="36" 
+                                viewBox="0 0 36 36"
+                            >
+                                <path fill="currentColor" 
+                                    d="M33.62 17.53c-3.37-6.23-9.28-10-15.82-10S5.34 11.3 2 17.53l-.28.47l.26.48c3.37 6.23 9.28 10 15.82 10s12.46-3.72 15.82-10l.26-.48Zm-15.82 8.9C12.17 26.43 7 23.29 4 18c3-5.29 8.17-8.43 13.8-8.43S28.54 12.72 31.59 18c-3.05 5.29-8.17 8.43-13.79 8.43Z" 
+                                    class="clr-i-outline clr-i-outline-path-1"
+                                />
+                                <path fill="currentColor" 
+                                    d="M18.09 11.17A6.86 6.86 0 1 0 25 18a6.86 6.86 0 0 0-6.91-6.83Zm0 11.72A4.86 4.86 0 1 1 23 18a4.87 4.87 0 0 1-4.91 4.89Z" 
+                                    class="clr-i-outline clr-i-outline-path-2"
+                                />
+                                <path fill="none" d="M0 0h36v36H0z"/>
+                            </svg>
+                            <svg v-else 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                width="36" 
+                                height="36" 
+                                viewBox="0 0 36 36"
+                            >
+                                <path fill="currentColor" 
+                                    d="M25.19 20.4a6.78 6.78 0 0 0 .43-2.4a6.86 6.86 0 0 0-6.86-6.86a6.79 6.79 0 0 0-2.37.43L18 13.23a4.78 4.78 0 0 1 .74-.06A4.87 4.87 0 0 1 23.62 18a4.79 4.79 0 0 1-.06.74Z" class="clr-i-outline clr-i-outline-path-1"/><path fill="currentColor" d="M34.29 17.53c-3.37-6.23-9.28-10-15.82-10a16.82 16.82 0 0 0-5.24.85L14.84 10a14.78 14.78 0 0 1 3.63-.47c5.63 0 10.75 3.14 13.8 8.43a17.75 17.75 0 0 1-4.37 5.1l1.42 1.42a19.93 19.93 0 0 0 5-6l.26-.48Z" class="clr-i-outline clr-i-outline-path-2"/><path fill="currentColor" d="m4.87 5.78l4.46 4.46a19.52 19.52 0 0 0-6.69 7.29l-.26.47l.26.48c3.37 6.23 9.28 10 15.82 10a16.93 16.93 0 0 0 7.37-1.69l5 5l1.75-1.5l-26-26Zm9.75 9.75l6.65 6.65a4.81 4.81 0 0 1-2.5.72A4.87 4.87 0 0 1 13.9 18a4.81 4.81 0 0 1 .72-2.47Zm-1.45-1.45a6.85 6.85 0 0 0 9.55 9.55l1.6 1.6a14.91 14.91 0 0 1-5.86 1.2c-5.63 0-10.75-3.14-13.8-8.43a17.29 17.29 0 0 1 6.12-6.3Z" 
+                                    class="clr-i-outline clr-i-outline-path-3"
+                                />
+                                <path fill="none" d="M0 0h36v36H0z"/>
+                            </svg>
+                        </button>
+                      </label>
+                      
             
-                    <div class="flex flex-row items-start justify-between justify-items-stretch mt-4 gap-2">
+                    <div class="flex flex-row items-start justify-between justify-items-stretch mt-4 gap-4">
                         <div>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" class="text-indigo-600 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500">
-                            <span class="mx-2 text-sm text-gray-600">Remember me</span>
-                        </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="text-indigo-600 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500">
+                                <span class="mx-2 text-sm text-gray-600">Remember me</span>
+                            </label>
                         </div>
             
                         <div>
@@ -106,11 +143,11 @@ function forgotPassword(){
                     </div>
                 </form>
             </div>
-            <div class="flex w-full h-full basis-1/2">
+            <div class="flex w-full h-full max-h-full max-w-full basis-1/2">
                 <img
                     src="/Rectangle 313.png"
-                    className="h-full w-full grow object-cover object-center rounded-lg tall:block"
-                />              
+                    className="object-cover top-0 right-0"
+                >              
             </div>
         </div>
       </div>
